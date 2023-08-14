@@ -30,8 +30,8 @@ app.get("/song/list", (req, res) => {
   res.json({
     songs: [
       {
-        title: "안녕",
-        singer: "니니니니니",
+        title: "안녕하세요zz",
+        singer: "니니니니니zz",
       },
     ],
   });
