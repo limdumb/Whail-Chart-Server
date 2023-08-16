@@ -22,20 +22,42 @@ app.use(
   express.static(path.join(__dirname, "public"), { maxAge: 31557600000 })
 );
 
-app.get("/", (req, res) => {
-  res.send("hello world");
+app.use((req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
 });
 
-app.get("/song/list", (req, res) => {
+app.get("/songs", (req, res) => {
   res.json({
-    songs: [
-      {
-        title: "안녕하세요zz",
-        singer: "니니니니니zz",
-      },
-    ],
+    data: {
+      date: "2023-08-14",
+      hour: 17,
+      platform: "Melon",
+      chart: [
+        {
+          rank: 1,
+          previous: 1,
+          likes: "1,111,111",
+          song: {
+            id: 11,
+            name: "Super Shy",
+            release: "2023-07-07",
+            album: {
+              id: 1,
+              name: "NewJeans 2nd EP 'Get Up",
+              image: "이미지입니다",
+            },
+            artists: [
+              {
+                id: 12,
+                name: "NewJeans",
+                image: "이미지입니다",
+              },
+            ],
+          },
+        },
+      ],
+    },
   });
 });
-
 
 export default app;
