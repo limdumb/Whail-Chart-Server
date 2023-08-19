@@ -22,8 +22,9 @@ app.use(
   express.static(path.join(__dirname, "public"), { maxAge: 31557600000 })
 );
 
-app.use((req, res) => {
+app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
+  next();
 });
 
 app.get("/songs", (req, res) => {
