@@ -4,11 +4,76 @@ import bodyParser from "body-parser";
 import lusca from "lusca";
 import flash from "express-flash";
 import path from "path";
+import { baseInstance } from "./config/axiosConfig";
+import { AxiosResponse } from "axios";
+import { transformChartData } from "./function/transformChartData";
+
+export interface ApiResponse {
+  code: number;
+  message: string;
+  body: {
+    platform: string;
+    chart: string;
+    timeUnit: string;
+    time: string;
+    size: number;
+    data: Data[];
+  };
+}
+
+interface Data {
+  ranking: number;
+  previous: number;
+  like: number;
+  song: {
+    platform: string;
+    id: string;
+    name: string;
+    isTitle: boolean;
+    duration: number;
+    trackNo: number;
+    releasedAt: string;
+    album: {
+      platform: string;
+      id: string;
+      name: string;
+      image: string;
+      releasedAt: string;
+      songs: string[];
+      artists: Artist[];
+      createdAt: string;
+      updatedAt: string;
+    };
+    artists: Artist[];
+    lyricists: Artist[];
+    composers: Artist[];
+    arrangers: Artist[];
+    genres: Genre[];
+    createdAt: string;
+    updatedAt: string;
+  };
+}
+
+interface Artist {
+  platform: string;
+  id: string;
+  name: string;
+  image: string;
+  albums: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface Genre {
+  platform: string;
+  id: string;
+  name: string;
+}
 
 const app = express();
 
 // Express configuration
-app.set("port", process.env.PORT || 3000);
+app.set("port", process.env.PORT || 8080);
 app.set("views", path.join(__dirname, "../views"));
 app.set("view engine", "pug");
 app.use(compression());
@@ -27,38 +92,15 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/songs", (req, res) => {
-  res.json({
-    data: {
-      date: "2023-08-14",
-      hour: 17,
-      platform: "Melon",
-      chart: [
-        {
-          rank: 1,
-          previous: 1,
-          likes: "1,111,111",
-          song: {
-            id: 11,
-            name: "Super Shy",
-            release: "2023-07-07",
-            album: {
-              id: 1,
-              name: "NewJeans 2nd EP 'Get Up",
-              image: "이미지입니다",
-            },
-            artists: [
-              {
-                id: 12,
-                name: "NewJeans",
-                image: "이미지입니다",
-              },
-            ],
-          },
-        },
-      ],
-    },
-  });
+app.get("/songs", async (req, res) => {
+
+  const response: AxiosResponse<ApiResponse> = await baseInstance.get(
+    "/api/v3/chart/melon/realtime/now"
+  );
+  
+  const transformChartResponse = transformChartData(response.data);
+
+  res.json(transformChartResponse);
 });
 
 export default app;
