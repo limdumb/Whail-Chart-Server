@@ -7,6 +7,10 @@ import path from "path";
 import { baseInstance } from "./config/axiosConfig";
 import { AxiosResponse } from "axios";
 import { transformChartData } from "./function/transformChartData";
+import {
+  GenieDataType,
+  transformGenieData,
+} from "./function/transformGenieData";
 
 export interface ApiResponse<T> {
   code: number;
@@ -54,7 +58,6 @@ export interface MelonData {
   };
 }
 
-
 interface Artist {
   platform: string;
   id: string;
@@ -100,6 +103,22 @@ app.get("/songs/:type", async (req, res) => {
       await baseInstance.get(`/api/v3/chart/${type}/realtime/now`);
     const transformChartResponse = transformChartData(response.data);
     res.json(transformChartResponse);
+  }
+
+  if (type === "genie") {
+    const response: AxiosResponse<ApiResponse<GenieDataType>> =
+      await baseInstance.get(`/api/v3/chart/${type}/realtime/now`);
+    const transformChartResponse = transformGenieData(response.data);
+    res.json(transformChartResponse);
+  }
+
+  if (type === "flo") {
+  }
+
+  if (type === "bugs") {
+  }
+
+  if (type === "vibe") {
   }
 });
 
