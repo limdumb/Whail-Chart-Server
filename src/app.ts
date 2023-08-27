@@ -8,7 +8,7 @@ import { baseInstance } from "./config/axiosConfig";
 import { AxiosResponse } from "axios";
 import { transformChartData } from "./function/transformChartData";
 
-export interface ApiResponse {
+export interface ApiResponse<T> {
   code: number;
   message: string;
   body: {
@@ -17,11 +17,11 @@ export interface ApiResponse {
     timeUnit: string;
     time: string;
     size: number;
-    data: Data[];
+    data: T[];
   };
 }
 
-interface Data {
+export interface MelonData {
   ranking: number;
   previous: number;
   like: number;
@@ -53,6 +53,7 @@ interface Data {
     updatedAt: string;
   };
 }
+
 
 interface Artist {
   platform: string;
@@ -92,15 +93,14 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/songs", async (req, res) => {
-
-  const response: AxiosResponse<ApiResponse> = await baseInstance.get(
-    "/api/v3/chart/melon/realtime/now"
-  );
-  
-  const transformChartResponse = transformChartData(response.data);
-
-  res.json(transformChartResponse);
+app.get("/songs/:type", async (req, res) => {
+  const type = req.params.type;
+  if (type === "melon") {
+    const response: AxiosResponse<ApiResponse<MelonData>> =
+      await baseInstance.get(`/api/v3/chart/${type}/realtime/now`);
+    const transformChartResponse = transformChartData(response.data);
+    res.json(transformChartResponse);
+  }
 });
 
 export default app;
