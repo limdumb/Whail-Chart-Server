@@ -95,7 +95,7 @@ interface FloSongDataType {
 }
 
 interface FloChartDataType {
-  pletform: string;
+  platform: string;
   date: string;
   hour: number;
   chart: FloSongDataType[];
@@ -120,7 +120,7 @@ export const transformFloData = (
     },
   }));
   const transformChartResponse: FloChartDataType = {
-    pletform: responseData.body.platform,
+    platform: responseData.body.platform,
     date: formattedDateTime.year,
     hour: formattedDateTime.hour,
     chart: chart,
