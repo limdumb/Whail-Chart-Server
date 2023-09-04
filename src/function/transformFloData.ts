@@ -1,7 +1,7 @@
 import { ApiResponse } from "../app";
 import formatDateTime from "./formatDateTime";
 
-interface FloDataType {
+export interface FloDataType {
   ranking: number;
   previous: number;
   song: {
@@ -94,7 +94,7 @@ interface FloSongDataType {
   };
 }
 
-interface FloChartDataType {
+export interface FloChartDataType {
   platform: string;
   date: string;
   hour: number;

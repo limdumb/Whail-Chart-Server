@@ -1,7 +1,7 @@
 import { ApiResponse } from "../app";
 import formatDateTime from "./formatDateTime";
 
-interface SongInfo {
+export interface SongInfo {
   platform: string;
   id: string;
   name: string;
@@ -47,7 +47,7 @@ interface GenreInfo {
   name: string;
 }
 
-interface BugsData {
+export interface BugsData {
   ranking: number;
   previous: number;
   song: SongInfo;

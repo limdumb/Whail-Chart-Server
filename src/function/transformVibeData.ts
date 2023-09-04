@@ -47,7 +47,7 @@ interface GenreInfo {
   name: string;
 }
 
-interface VibeData {
+export interface VibeData {
   ranking: number;
   previous: number;
   song: SongInfo;

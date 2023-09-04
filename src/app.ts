@@ -11,6 +11,13 @@ import {
   GenieDataType,
   transformGenieData,
 } from "./function/transformGenieData";
+import {
+  FloChartDataType,
+  FloDataType,
+  transformFloData,
+} from "./function/transformFloData";
+import { BugsData, transformBugsData } from "./function/transformBugsData";
+import { VibeData, transformVibeData } from "./function/transformVibeData";
 
 export interface ApiResponse<T> {
   code: number;
@@ -76,6 +83,8 @@ interface Genre {
 
 const app = express();
 
+// const mockData:ApiResponse<MelonData> = {}
+
 // Express configuration
 app.set("port", process.env.PORT || 8080);
 app.set("views", path.join(__dirname, "../views"));
@@ -98,6 +107,7 @@ app.use((req, res, next) => {
 
 app.get("/songs/:type", async (req, res) => {
   const type = req.params.type;
+
   if (type === "melon") {
     const response: AxiosResponse<ApiResponse<MelonData>> =
       await baseInstance.get(`/api/v3/chart/${type}/realtime/now`);
@@ -113,12 +123,24 @@ app.get("/songs/:type", async (req, res) => {
   }
 
   if (type === "flo") {
+    const response: AxiosResponse<ApiResponse<FloDataType>> =
+      await baseInstance.get("/api/v3/chart/flo/24hour/now");
+    const transformChartResponse = transformFloData(response.data);
+    res.json(transformChartResponse);
   }
 
   if (type === "bugs") {
+    const response: AxiosResponse<ApiResponse<BugsData>> =
+      await baseInstance.get(`/api/v3/chart/${type}/realtime/now`);
+    const transformChartResponse = transformBugsData(response.data);
+    res.json(transformChartResponse);
   }
 
   if (type === "vibe") {
+    const response: AxiosResponse<ApiResponse<VibeData>> =
+      await baseInstance.get("/api/v3/chart/vibe/daily/now");
+    const transformChartResponse = transformVibeData(response.data);
+    res.json(transformChartResponse);
   }
 });
 
