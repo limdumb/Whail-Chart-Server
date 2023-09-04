@@ -150,7 +150,7 @@ app.get("/songs/:type", async (req, res) => {
   }
 });
 
-app.get("songs/daily/:type/:date", async (req, res) => {
+app.get("/songs/daily/:type/:date", async (req, res) => {
   const type = req.params.type;
   const date = req.params.date;
 
