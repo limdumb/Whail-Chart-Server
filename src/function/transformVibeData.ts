@@ -1,4 +1,4 @@
-import { ApiResponse } from "../app";
+import { ApiResponse, Artist, Genre } from "../app";
 import formatDateTime from "./formatDateTime";
 
 interface SongInfo {
@@ -10,11 +10,11 @@ interface SongInfo {
   trackNo: number;
   releasedAt: string;
   album: AlbumInfo;
-  artists: ArtistInfo[];
-  lyricists: ArtistInfo[];
-  composers: ArtistInfo[];
-  arrangers: ArtistInfo[];
-  genres: GenreInfo[];
+  artists: Artist[];
+  lyricists: Artist[];
+  composers: Artist[];
+  arrangers: Artist[];
+  genres: Genre[];
   createdAt: string;
   updatedAt: string;
 }
@@ -26,25 +26,9 @@ interface AlbumInfo {
   image: string;
   releasedAt: string;
   songs: string[];
-  artists: ArtistInfo[];
+  artists: Artist[];
   createdAt: string;
   updatedAt: string;
-}
-
-interface ArtistInfo {
-  platform: string;
-  id: string;
-  name: string;
-  image: string;
-  albums: string[];
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface GenreInfo {
-  platform: string;
-  id: string;
-  name: string;
 }
 
 export interface VibeData {

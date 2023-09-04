@@ -1,7 +1,7 @@
+import formatDateTime from "../function/formatDateTime";
 import { ApiResponse, Artist, Genre } from "../app";
-import formatDateTime from "./formatDateTime";
 
-export interface FloDataType {
+export interface BugsDailyChartType {
   ranking: number;
   previous: number;
   song: {
@@ -33,7 +33,7 @@ export interface FloDataType {
   };
 }
 
-interface FloSongDataType {
+interface BugsDailySongType {
   rank: number;
   previous: number;
   song: {
@@ -48,32 +48,37 @@ interface FloSongDataType {
   };
 }
 
-export interface FloChartDataType {
+export interface TransformBugsDailyChart {
   platform: string;
   date: string;
   hour: number;
-  chart: FloSongDataType[];
+  chart: BugsDailySongType[];
 }
 
-export const transformFloData = (
-  responseData: ApiResponse<FloDataType>
-): FloChartDataType => {
+export const melonDailyChart = (
+  responseData: ApiResponse<BugsDailyChartType>
+): TransformBugsDailyChart => {
   const formattedDateTime = formatDateTime(responseData.body.time);
-  const chart: FloSongDataType[] = responseData.body.data.map((el) => ({
-    rank: el.ranking,
-    previous: el.previous,
-    song: {
-      id: Number(el.song.id),
-      name: el.song.name,
-      image: el.song.artists[0].image,
-      artists: {
-        id: Number(el.song.artists[0].id),
-        name: el.song.artists[0].name,
-        image: el.song.artists[0].image,
+
+  const chart: BugsDailySongType[] = responseData.body.data.map((el) => {
+    const transformData: BugsDailySongType = {
+      rank: el.ranking,
+      previous: el.previous,
+      song: {
+        id: Number(el.song.id),
+        name: el.song.name,
+        image: el.song.album.image,
+        artists: {
+          id: Number(el.song.artists[0].id),
+          name: el.song.artists[0].name,
+          image: el.song.artists[0].image,
+        },
       },
-    },
-  }));
-  const transformChartResponse: FloChartDataType = {
+    };
+    return transformData;
+  });
+
+  const transformChartResponse: TransformBugsDailyChart = {
     platform: responseData.body.platform,
     date: formattedDateTime.year,
     hour: formattedDateTime.hour,

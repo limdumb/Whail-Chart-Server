@@ -11,13 +11,14 @@ import {
   GenieDataType,
   transformGenieData,
 } from "./function/transformGenieData";
-import {
-  FloChartDataType,
-  FloDataType,
-  transformFloData,
-} from "./function/transformFloData";
+import { FloDataType, transformFloData } from "./function/transformFloData";
 import { BugsData, transformBugsData } from "./function/transformBugsData";
 import { VibeData, transformVibeData } from "./function/transformVibeData";
+import { MelonDailyChartType, melonDailyChart } from "./daily/melonDailyChart";
+import { BugsDailyChartType } from "./daily/bugsDailyChart";
+
+// 일간차트 Data Transform 타입 생성
+//
 
 export interface ApiResponse<T> {
   code: number;
@@ -65,7 +66,7 @@ export interface MelonData {
   };
 }
 
-interface Artist {
+export interface Artist {
   platform: string;
   id: string;
   name: string;
@@ -75,15 +76,13 @@ interface Artist {
   updatedAt: string;
 }
 
-interface Genre {
+export interface Genre {
   platform: string;
   id: string;
   name: string;
 }
 
 const app = express();
-
-// const mockData:ApiResponse<MelonData> = {}
 
 // Express configuration
 app.set("port", process.env.PORT || 8080);
@@ -107,6 +106,13 @@ app.use((req, res, next) => {
 
 app.get("/songs/:type", async (req, res) => {
   const type = req.params.type;
+
+  if (type === "melon24") {
+    const response: AxiosResponse<ApiResponse<MelonData>> =
+      await baseInstance.get("/api/v3/chart/melon/24hits/now");
+    const transformChartResponse = transformChartData(response.data);
+    res.json(transformChartResponse);
+  }
 
   if (type === "melon") {
     const response: AxiosResponse<ApiResponse<MelonData>> =
@@ -140,6 +146,46 @@ app.get("/songs/:type", async (req, res) => {
     const response: AxiosResponse<ApiResponse<VibeData>> =
       await baseInstance.get("/api/v3/chart/vibe/daily/now");
     const transformChartResponse = transformVibeData(response.data);
+    res.json(transformChartResponse);
+  }
+});
+
+app.get("songs/daily/:type/:date", async (req, res) => {
+  const type = req.params.type;
+  const date = req.params.date;
+
+  if (type === "melon") {
+    const response: AxiosResponse<ApiResponse<MelonDailyChartType>> =
+      await baseInstance.get(`/api/v3/chart/${type}/daily/${date}`);
+    const transformChartResponse = melonDailyChart(response.data);
+    res.json(transformChartResponse);
+  }
+
+  if (type === "genie") {
+    const response: AxiosResponse<ApiResponse<GenieDataType>> =
+      await baseInstance.get(`/api/v3/chart/${type}/realtime/now`);
+    const transformChartResponse = transformGenieData(response.data);
+    res.json(transformChartResponse);
+  }
+
+  if (type === "flo") {
+    const response: AxiosResponse<ApiResponse<FloDataType>> =
+      await baseInstance.get("/api/v3/chart/flo/24hour/now");
+    const transformChartResponse = transformFloData(response.data);
+    res.json(transformChartResponse);
+  }
+
+  if (type === "vibe") {
+    const response: AxiosResponse<ApiResponse<VibeData>> =
+      await baseInstance.get("/api/v3/chart/vibe/daily/now");
+    const transformChartResponse = transformVibeData(response.data);
+    res.json(transformChartResponse);
+  }
+
+  if (type === "bugs") {
+    const response: AxiosResponse<ApiResponse<BugsDailyChartType>> =
+      await baseInstance.get(`/api/v3/chart/bugs/daily/${date}`);
+    const transformChartResponse = transformBugsData(response.data);
     res.json(transformChartResponse);
   }
 });

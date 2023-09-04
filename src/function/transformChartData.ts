@@ -1,7 +1,7 @@
 import { ApiResponse, MelonData } from "../app";
 import formatDateTime from "./formatDateTime";
 
-interface ChartDataType {
+interface MelonChartDataType {
   pletform: string;
   date: string;
   hour: number;
@@ -11,7 +11,7 @@ interface ChartDataType {
 interface MelonChartData {
   rank: number;
   previous: number;
-  likes: string;
+  likes?: string;
   song: {
     id: number;
     name: string;
@@ -25,7 +25,7 @@ interface MelonChartData {
 }
 export const transformChartData = (
   responseData: ApiResponse<MelonData>
-): ChartDataType => {
+): MelonChartDataType => {
   const chart: MelonChartData[] = responseData.body.data.map((el) => ({
     rank: el.ranking,
     previous: el.previous,
@@ -44,7 +44,7 @@ export const transformChartData = (
 
   const formattedDateTime = formatDateTime(responseData.body.time);
 
-  const transformChartResponse: ChartDataType = {
+  const transformChartResponse: MelonChartDataType = {
     pletform: responseData.body.platform,
     date: formattedDateTime.year,
     hour: formattedDateTime.hour,

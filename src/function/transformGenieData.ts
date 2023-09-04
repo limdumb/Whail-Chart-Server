@@ -1,4 +1,4 @@
-import { ApiResponse } from "../app";
+import { ApiResponse, Artist, Genre } from "../app";
 import formatDateTime from "./formatDateTime";
 interface GenieChartDataType {
   pletform: string;
@@ -43,40 +43,23 @@ export interface GenieDataType {
       image: string;
       releasedAt: string;
       songs: string[];
-      artists: ApiArtist[];
+      artists: Artist[];
       createdAt: string;
       updatedAt: string;
     };
-    artists: ApiArtist[];
-    lyricists: ApiArtist[];
-    composers: ApiArtist[];
-    arrangers: ApiArtist[];
-    genres: ApiGenre[];
+    artists: Artist[];
+    lyricists: Artist[];
+    composers: Artist[];
+    arrangers: Artist[];
+    genres: Genre[];
     createdAt: string;
     updatedAt: string;
   };
-}
-
-interface ApiArtist {
-  platform: string;
-  id: string;
-  name: string;
-  image: string;
-  albums: string[];
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface ApiGenre {
-  platform: string;
-  id: string;
-  name: string;
 }
 export const transformGenieData = (
   responseData: ApiResponse<GenieDataType>
 ): GenieChartDataType => {
   const formattedDateTime = formatDateTime(responseData.body.time);
-  // count 1,2 string으로 변환해
   const chart: GenieChartData[] = responseData.body.data.map((el) => {
     const transformCount1 = el.count1.toLocaleString();
     const transformCount2 = el.count2.toLocaleString();

@@ -1,9 +1,11 @@
+import formatDateTime from "../function/formatDateTime";
 import { ApiResponse, Artist, Genre } from "../app";
-import formatDateTime from "./formatDateTime";
 
-export interface FloDataType {
+export interface MelonDailyChartType {
   ranking: number;
   previous: number;
+  count: number;
+  ratio: Ration;
   song: {
     platform: string;
     id: string;
@@ -33,7 +35,18 @@ export interface FloDataType {
   };
 }
 
-interface FloSongDataType {
+export interface Ration {
+  male: number;
+  female: number;
+  age10: number;
+  age20: number;
+  age30: number;
+  age40: number;
+  age50: number;
+  age60: number;
+}
+
+interface MelonDailySongType {
   rank: number;
   previous: number;
   song: {
@@ -48,32 +61,37 @@ interface FloSongDataType {
   };
 }
 
-export interface FloChartDataType {
+export interface TransformMelonDailyChart {
   platform: string;
   date: string;
   hour: number;
-  chart: FloSongDataType[];
+  chart: MelonDailySongType[];
 }
 
-export const transformFloData = (
-  responseData: ApiResponse<FloDataType>
-): FloChartDataType => {
+export const melonDailyChart = (
+  responseData: ApiResponse<MelonDailyChartType>
+): TransformMelonDailyChart => {
   const formattedDateTime = formatDateTime(responseData.body.time);
-  const chart: FloSongDataType[] = responseData.body.data.map((el) => ({
-    rank: el.ranking,
-    previous: el.previous,
-    song: {
-      id: Number(el.song.id),
-      name: el.song.name,
-      image: el.song.artists[0].image,
-      artists: {
-        id: Number(el.song.artists[0].id),
-        name: el.song.artists[0].name,
-        image: el.song.artists[0].image,
+
+  const chart: MelonDailySongType[] = responseData.body.data.map((el) => {
+    const transformData: MelonDailySongType = {
+      rank: el.ranking,
+      previous: el.previous,
+      song: {
+        id: Number(el.song.id),
+        name: el.song.name,
+        image: el.song.album.image,
+        artists: {
+          id: Number(el.song.artists[0].id),
+          name: el.song.artists[0].name,
+          image: el.song.artists[0].image,
+        },
       },
-    },
-  }));
-  const transformChartResponse: FloChartDataType = {
+    };
+    return transformData;
+  });
+
+  const transformChartResponse: TransformMelonDailyChart = {
     platform: responseData.body.platform,
     date: formattedDateTime.year,
     hour: formattedDateTime.hour,
