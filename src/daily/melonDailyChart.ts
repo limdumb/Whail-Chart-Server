@@ -49,6 +49,7 @@ export interface Ration {
 interface MelonDailySongType {
   rank: number;
   previous: number;
+  count:number;
   song: {
     id: number;
     name: string;
@@ -77,6 +78,7 @@ export const melonDailyChart = (
     const transformData: MelonDailySongType = {
       rank: el.ranking,
       previous: el.previous,
+      count:el.count,
       song: {
         id: Number(el.song.id),
         name: el.song.name,

@@ -17,9 +17,6 @@ import { VibeData, transformVibeData } from "./function/transformVibeData";
 import { MelonDailyChartType, melonDailyChart } from "./daily/melonDailyChart";
 import { BugsDailyChartType } from "./daily/bugsDailyChart";
 
-// 일간차트 Data Transform 타입 생성
-//
-
 export interface ApiResponse<T> {
   code: number;
   message: string;
@@ -107,9 +104,9 @@ app.use((req, res, next) => {
 app.get("/songs/:type", async (req, res) => {
   const type = req.params.type;
 
-  if (type === "melon24") {
+  if (type === "melon100") {
     const response: AxiosResponse<ApiResponse<MelonData>> =
-      await baseInstance.get("/api/v3/chart/melon/24hits/now");
+      await baseInstance.get("/api/v3/chart/melon/hot100-d100/now");
     const transformChartResponse = transformChartData(response.data);
     res.json(transformChartResponse);
   }
