@@ -16,6 +16,7 @@ import { BugsData, transformBugsData } from "./function/transformBugsData";
 import { VibeData, transformVibeData } from "./function/transformVibeData";
 import { MelonDailyChartType, melonDailyChart } from "./daily/melonDailyChart";
 import { BugsDailyChartType } from "./daily/bugsDailyChart";
+import { genieDailyChart } from "./daily/genieDailyChart";
 
 export interface ApiResponse<T> {
   code: number;
@@ -160,8 +161,8 @@ app.get("/songs/daily/:type/:date", async (req, res) => {
 
   if (type === "genie") {
     const response: AxiosResponse<ApiResponse<GenieDataType>> =
-      await baseInstance.get(`/api/v3/chart/${type}/realtime/now`);
-    const transformChartResponse = transformGenieData(response.data);
+      await baseInstance.get(`/api/v3/chart/genie/realtime/${date}/00`);
+    const transformChartResponse = genieDailyChart(response.data);
     res.json(transformChartResponse);
   }
 

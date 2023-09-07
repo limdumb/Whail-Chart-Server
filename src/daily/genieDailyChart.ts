@@ -1,5 +1,5 @@
+import formatDateTime from "../function/formatDateTime";
 import { ApiResponse, Artist, Genre } from "../app";
-import formatDateTime from "./formatDateTime";
 interface GenieChartDataType {
   pletform: string;
   date: string;
@@ -10,6 +10,8 @@ interface GenieChartDataType {
 interface GenieChartData {
   rank: number;
   previous: number;
+  listnerCount: string;
+  playCount: string;
   song: {
     id: number;
     name: string;
@@ -54,14 +56,18 @@ export interface GenieDataType {
     updatedAt: string;
   };
 }
-export const transformGenieData = (
+export const genieDailyChart = (
   responseData: ApiResponse<GenieDataType>
 ): GenieChartDataType => {
   const formattedDateTime = formatDateTime(responseData.body.time);
   const chart: GenieChartData[] = responseData.body.data.map((el) => {
+    const transformCount1 = el.count1.toLocaleString();
+    const transformCount2 = el.count2.toLocaleString();
     const transformChart = {
       rank: el.ranking,
       previous: el.previous,
+      listnerCount: transformCount1,
+      playCount: transformCount2,
       song: {
         id: Number(el.song.id),
         name: el.song.name,
