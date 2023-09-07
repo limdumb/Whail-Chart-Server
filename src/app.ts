@@ -15,8 +15,9 @@ import { FloDataType, transformFloData } from "./function/transformFloData";
 import { BugsData, transformBugsData } from "./function/transformBugsData";
 import { VibeData, transformVibeData } from "./function/transformVibeData";
 import { MelonDailyChartType, melonDailyChart } from "./daily/melonDailyChart";
-import { BugsDailyChartType } from "./daily/bugsDailyChart";
+import { BugsDailyChartType, bugsDailyChart } from "./daily/bugsDailyChart";
 import { genieDailyChart } from "./daily/genieDailyChart";
+import { floDailyChart } from "./daily/floDailyChart";
 
 export interface ApiResponse<T> {
   code: number;
@@ -168,22 +169,22 @@ app.get("/songs/daily/:type/:date", async (req, res) => {
 
   if (type === "flo") {
     const response: AxiosResponse<ApiResponse<FloDataType>> =
-      await baseInstance.get("/api/v3/chart/flo/24hour/now");
-    const transformChartResponse = transformFloData(response.data);
+      await baseInstance.get(`/api/v3/chart/flo/24hour/${date}/00`);
+    const transformChartResponse = floDailyChart(response.data);
     res.json(transformChartResponse);
   }
 
   if (type === "vibe") {
     const response: AxiosResponse<ApiResponse<VibeData>> =
-      await baseInstance.get("/api/v3/chart/vibe/daily/now");
-    const transformChartResponse = transformVibeData(response.data);
+      await baseInstance.get(`/api/v3/chart/vibe/daily/${date}`);
+    const transformChartResponse = floDailyChart(response.data);
     res.json(transformChartResponse);
   }
 
   if (type === "bugs") {
     const response: AxiosResponse<ApiResponse<BugsDailyChartType>> =
       await baseInstance.get(`/api/v3/chart/bugs/daily/${date}`);
-    const transformChartResponse = transformBugsData(response.data);
+    const transformChartResponse = bugsDailyChart(response.data);
     res.json(transformChartResponse);
   }
 });

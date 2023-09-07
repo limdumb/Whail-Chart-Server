@@ -1,7 +1,7 @@
 import formatDateTime from "../function/formatDateTime";
 import { ApiResponse, Artist, Genre } from "../app";
 
-export interface BugsDailyChartType {
+export interface FloDataType {
   ranking: number;
   previous: number;
   song: {
@@ -33,7 +33,7 @@ export interface BugsDailyChartType {
   };
 }
 
-interface BugsDailySongType {
+interface FloSongDataType {
   rank: number;
   previous: number;
   song: {
@@ -48,37 +48,32 @@ interface BugsDailySongType {
   };
 }
 
-export interface TransformBugsDailyChart {
+export interface FloChartDataType {
   platform: string;
   date: string;
   hour: number;
-  chart: BugsDailySongType[];
+  chart: FloSongDataType[];
 }
 
-export const bugsDailyChart = (
-  responseData: ApiResponse<BugsDailyChartType>
-): TransformBugsDailyChart => {
+export const floDailyChart = (
+  responseData: ApiResponse<FloDataType>
+): FloChartDataType => {
   const formattedDateTime = formatDateTime(responseData.body.time);
-
-  const chart: BugsDailySongType[] = responseData.body.data.map((el) => {
-    const transformData: BugsDailySongType = {
-      rank: el.ranking,
-      previous: el.previous,
-      song: {
-        id: Number(el.song.id),
-        name: el.song.name,
-        image: el.song.album.image,
-        artists: {
-          id: Number(el.song.artists[0].id),
-          name: el.song.artists[0].name,
-          image: el.song.artists[0].image,
-        },
+  const chart: FloSongDataType[] = responseData.body.data.map((el) => ({
+    rank: el.ranking,
+    previous: el.previous,
+    song: {
+      id: Number(el.song.id),
+      name: el.song.name,
+      image: el.song.artists[0].image,
+      artists: {
+        id: Number(el.song.artists[0].id),
+        name: el.song.artists[0].name,
+        image: el.song.artists[0].image,
       },
-    };
-    return transformData;
-  });
-
-  const transformChartResponse: TransformBugsDailyChart = {
+    },
+  }));
+  const transformChartResponse: FloChartDataType = {
     platform: responseData.body.platform,
     date: formattedDateTime.year,
     hour: formattedDateTime.hour,
